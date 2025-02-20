@@ -1,5 +1,6 @@
-import { sendAnalyticsEvent } from '../services/analytic.service.js';
-import { AnalyticsEvent } from '../models/analytic.model.js';
+import {sendAnalyticsEvent} from '../services/analytic.service.js';
+import {getAggregatedAnalytics} from '../services/analytic.service.js';
+import {AnalyticsEvent} from '../models/analytic.model.js';
 
 export const analyticsController = async (payload) => {
     try {
@@ -10,6 +11,15 @@ export const analyticsController = async (payload) => {
         return { message: 'Événement envoyé avec succès', result };
     } catch (error) {
         console.error('Erreur dans le contrôleur analytics :', error);
+        throw error;
+    }
+};
+
+export const analyticsGetController = async () => {
+    try {
+        return await getAggregatedAnalytics();
+    } catch (error) {
+        console.error('Erreur dans le contrôleur analytics (GET) :', error);
         throw error;
     }
 };
