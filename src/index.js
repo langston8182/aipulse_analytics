@@ -7,14 +7,14 @@ export const handler = async (event, context) => {
     try {
         await connectToDatabase(MONGODB_URI);
 
-        if (event.httpMethod === "GET") {
+        if (event.requestContext.http.method === "GET") {
             // Appel pour récupérer les statistiques agrégées
             const response = await analyticsGetController();
             return {
                 statusCode: 200,
                 body: JSON.stringify(response)
             };
-        } else if (event.httpMethod === "POST") {
+        } else if (event.requestContext.http.method === "POST") {
             // Pour POST, on parse le payload et on l'envoie
             const payload = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
             const response = await analyticsController(payload);

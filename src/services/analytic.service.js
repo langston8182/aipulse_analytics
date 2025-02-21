@@ -44,7 +44,7 @@ export const getAggregatedAnalytics = async () => {
                     _id: null,
                     facebook: { $sum: "$actions.shares.facebook" },
                     linkedin: { $sum: "$actions.shares.linkedin" },
-                    twitter: { $sum: "$actions.shares.twitter" }
+                    x: { $sum: "$actions.shares.x" }
                 }
             }
         ]);
