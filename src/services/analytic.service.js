@@ -51,9 +51,9 @@ export const getAggregatedAnalytics = async () => {
         const totalShares = sharesResult.length > 0 ? {
             facebook: sharesResult[0].facebook,
             linkedin: sharesResult[0].linkedin,
-            twitter: sharesResult[0].twitter,
-            total: sharesResult[0].facebook + sharesResult[0].linkedin + sharesResult[0].twitter
-        } : { facebook: 0, linkedin: 0, twitter: 0, total: 0 };
+            x: sharesResult[0].x,
+            total: sharesResult[0].facebook + sharesResult[0].linkedin + sharesResult[0].x
+        } : { facebook: 0, linkedin: 0, x: 0, total: 0 };
 
         // 4. Nombre total de pays différents (en excluant les valeurs nulles)
         const countriesResult = await AnalyticsEvent.distinct("country", { country: { $ne: null } });
