@@ -1,25 +1,22 @@
-import {KinesisClient, PutRecordCommand} from '@aws-sdk/client-kinesis';
+import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import {AnalyticsEvent} from "../models/amalytic_schema.model.js";
 
-// Instanciation du client Kinesis avec la région définie dans les variables d'environnement
-const kinesisClient = new KinesisClient({ region: process.env.AWS_REGION });
+const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
 
 export const sendAnalyticsEvent = async (analyticsEvent) => {
-    const streamName = process.env.KINESIS_STREAM_NAME;
+    const queueUrl = process.env.SQS_QUEUE_URL;
     const dataString = JSON.stringify(analyticsEvent);
 
     const params = {
-        StreamName: streamName,
-        Data: dataString + "\n",
-        // Utiliser par exemple l'IP anonymisée comme clé de partition
-        PartitionKey: analyticsEvent.hashedIp || 'default'
+        QueueUrl: queueUrl,
+        MessageBody: dataString,
     };
 
     try {
-        const command = new PutRecordCommand(params);
-        return await kinesisClient.send(command);
+        const command = new SendMessageCommand(params);
+        return await sqsClient.send(command);
     } catch (error) {
-        console.error('Erreur lors de l’envoi vers Kinesis :', error);
+        console.error('Erreur lors de l’envoi vers SQS :', error);
         throw error;
     }
 };
@@ -74,13 +71,33 @@ export const getAggregatedAnalytics = async () => {
             { $project: { _id: 0, articleId: "$_id", count: 1 } }
         ]);
 
+        // 7. Visites uniques par jour sur les 30 derniers jours
+        const dailyUniqueVisitsResult = await AnalyticsEvent.aggregate([
+            { $match: { timestamp: { $gte: thirtyDaysAgo } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+                    uniqueVisitors: { $addToSet: "$hashedIp" }
+                }
+            },
+            {
+                $project: {
+                    date: "$_id",
+                    uniqueCount: { $size: "$uniqueVisitors" },
+                    _id: 0
+                }
+            },
+            { $sort: { date: 1 } }
+        ]);
+
         return {
             totalVisitors,
             totalArticlesSeen,
             totalShares,
             distinctCountries,
             uniqueVisitorsLast30Days,
-            top5Articles: topArticlesResult
+            top5Articles: topArticlesResult,
+            dailyUniqueVisits: dailyUniqueVisitsResult
         };
     } catch (error) {
         console.error("Erreur lors de l'agrégation :", error);

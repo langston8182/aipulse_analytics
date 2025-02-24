@@ -14,7 +14,7 @@
     "bestzip": "^2.2.1"
   },
   "dependencies": {
-    "mongoose": "^8.10.1",
-    "@aws-sdk/client-kinesis": "^3.750.0"
+    "@aws-sdk/client-sqs": "^3.750.0",
+    "mongoose": "^8.10.1"
   }
 }
