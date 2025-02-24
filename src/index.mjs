@@ -1,5 +1,5 @@
-import { analyticsController, analyticsGetController } from './controllers/analytic.controller.js';
-import { connectToDatabase } from './db.js';
+import { analyticsController, analyticsGetController } from './controllers/analytic.controller.mjs';
+import { connectToDatabase } from './db.mjs';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 

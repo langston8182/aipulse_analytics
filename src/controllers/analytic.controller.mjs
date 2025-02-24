@@ -1,6 +1,6 @@
-import {sendAnalyticsEvent} from '../services/analytic.service.js';
-import {getAggregatedAnalytics} from '../services/analytic.service.js';
-import {AnalyticsEvent} from '../models/analytic.model.js';
+import { sendAnalyticsEvent } from '../services/analytic.service.mjs';
+import { getAggregatedAnalytics } from '../services/analytic.service.mjs';
+import { AnalyticsEvent } from '../models/analytic.model.mjs';
 
 export const analyticsController = async (payload) => {
     try {

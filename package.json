@@ -1,7 +1,6 @@
 {
   "name": "ai_pulse_analytics",
   "version": "1.0.0",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "bestzip build.zip * --ignore=node_modules/aws-sdk/* --ignore=.git",

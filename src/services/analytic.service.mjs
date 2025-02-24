@@ -1,5 +1,5 @@
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
-import {AnalyticsEvent} from "../models/amalytic_schema.model.js";
+import { AnalyticsEvent } from "../models/analytic_schema.model.mjs";
 
 const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
 
