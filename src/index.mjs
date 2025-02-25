@@ -1,11 +1,16 @@
 import { analyticsController, analyticsGetController } from './controllers/analytic.controller.mjs';
 import { connectToDatabase } from './db.mjs';
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
 export const handler = async (event, context) => {
     try {
-        await connectToDatabase(MONGODB_URI);
+        // 1. Connexion MongoDB
+        const env = process.env.ENVIRONMENT || "preprod";
+        const dbUri = env === "prod" ? process.env.MONGODB_URI_PROD : process.env.MONGODB_URI_PREPROD;
+
+        if (!dbUri) {
+            throw new Error(`Aucune URI MongoDB définie pour l'environnement ${env}`);
+        }
+        await connectToDatabase(dbUri);
 
         if (event.requestContext.http.method === "GET") {
             // Appel pour récupérer les statistiques agrégées

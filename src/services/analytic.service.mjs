@@ -4,7 +4,12 @@ import { AnalyticsEvent } from "../models/analytic_schema.model.mjs";
 const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
 
 export const sendAnalyticsEvent = async (analyticsEvent) => {
-    const queueUrl = process.env.SQS_QUEUE_URL;
+    const env = process.env.ENVIRONMENT || "preprod";
+    const queueUrl = env === "prod" ? process.env.SQS_URL_PROD : process.env.SQS_URL_PREPROD;
+
+    if (!queueUrl) {
+        throw new Error(`Aucune URL SQS définie pour l'environnement ${env}`);
+    }
     const dataString = JSON.stringify(analyticsEvent);
 
     const params = {
